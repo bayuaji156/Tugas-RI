@@ -1,19 +1,35 @@
-# flutter_application_1
+# GrowPlanner
 
-A new Flutter project.
+## Deskripsi Aplikasi
 
-## Getting Started
+GrowPlanner adalah aplikasi perencanaan dan manajemen produktivitas berbasis web yang dirancang untuk membantu pengguna dalam mengelola tujuan, jadwal kegiatan, dan pelacakan progres pengembangan diri. ApliDengan integrasi fitur dalam syusunan rencana belajar atau proyek, manajemen tugas (task management), pengingat (reminder). Dengan integrasi fitur dalam satu platform, proses perencanaan, pengelolaan waktu, serta pemantauan progres dapat dilakukan secara lebih terstruktur, terukur, dan efisien.
 
-This project is a starting point for a Flutter application.
+## Anggota Kelompok :
 
-A few resources to get you started if this is your first Flutter project:
+•⁠ ⁠C-202210370311347-Bayu Aji Nugroho-bayuaji1564
+•⁠ ⁠C-202210370311348-Febriyo Nugroho-fancy484
+•⁠ ⁠C-202210370311355-Natasya Delvira Maharani-natasyadelviraa
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Link Figma
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-Nama: Febriyo Nugroho (Anggota)
-Febriyo Nugroho melakukan update pada fitur Dashboard, TimeSync dan juga ScheduleSafe
-Perubahan Readme.md dan update fitur
+[Figma](https://www.figma.com/design/lsLdcEUq1dhMqfmmvo4vpq/FITWELL?node-id=0-1&p=f)
+
+## Worksheet
+
+
+
+## Low Fidelity Prototype
+
+
+
+## Tabel Pembagian Tugas (Backlog)
+
+| **GrowPlanner**    |                  |                  |                          |                          |                          |
+| ------------------ | ---------------- | ---------------- | ------------------------ | ------------------------ | ------------------------ |
+| **Agile Role**     | **Login**        | **Register**     | **Fitur Dashboard**      | **Fitur TimeSync**       | **Fitur ScheduleSafe**   |
+| **Product Owner**  | Bayu Aji Nugroho | Febriyo Nugroho  | Natasya Delvira Maharani | Febriyo Nugroho          | Bayu Aji Nugroho         |
+| **Scrum Master**   | Febriyo Nugroho  | Bayu Aji Nugroho | Febriyo Nugroho          | Bayu Aji Nugroho         | Natasya Delvira Maharani |
+| **Tim Pengembang** | Bayu Aji Nugroho | Febriyo Nugroho  | Bayu Aji Nugroho         | Natasya Delvira Maharani | Febriyo Nugroho          |
+|                    | Febriyo Nugroho  | Bayu Aji Nugroho | Febriyo Nugroho          | Febriyo Nugroho          | Bayu Aji Nugroho         |
+|                    |                  |                  | Natasya Delvira Maharani | Bayu Aji Nugroho         | Natasya Delvira Maharani |
+
