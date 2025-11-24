@@ -43,4 +43,3 @@ GrowPlanner adalah aplikasi perencanaan dan manajemen produktivitas berbasis web
 |                    | Febriyo Nugroho  | Bayu Aji Nugroho | Febriyo Nugroho          | Febriyo Nugroho          | Bayu Aji Nugroho         |
 |                    |                  |                  | Natasya Delvira Maharani | Bayu Aji Nugroho         | Natasya Delvira Maharani |
 
->>>>>>> 732a849495a3f03ca5e82357cf0599e7fbb2eca0
