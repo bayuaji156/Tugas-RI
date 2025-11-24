@@ -17,6 +17,10 @@ GrowPlanner adalah aplikasi perencanaan dan manajemen produktivitas berbasis web
 ## Worksheet
 
 ![Worksheet Natasya](https://github.com/user-attachments/assets/66c47783-22c7-4d50-9e15-61ffe1f66e26)
+![Worksheet Bayu](https://github.com/user-attachments/assets/68cf0792-16e3-4eb8-a5e2-b000471f5042)
+![Worksheet Febriyo](https://github.com/user-attachments/assets/af1975ce-d1c3-4084-81a9-a71a5954d4b3)
+
+
 
 
 ## Low Fidelity Prototype
