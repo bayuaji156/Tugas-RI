@@ -15,3 +15,5 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 Nama: Febriyo Nugroho (Anggota)
+Febriyo Nugroho melakukan update pada fitur Dashboard, TimeSync dan juga ScheduleSafe
+Perubahan Readme.md dan update fitur
