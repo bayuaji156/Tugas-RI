@@ -1,70 +1,63 @@
 import 'package:flutter/material.dart';
 import '../models/schedule.dart';
+import '../services/database_service.dart';
+import '../services/api_service.dart';
 
 class ScheduleProvider extends ChangeNotifier {
+  final DatabaseService _dbService = DatabaseService.instance;
+  final ApiService _apiService = ApiService.instance;
+
   // Daftar semua jadwal
   final List<Schedule> _schedules = [];
+  bool _isLoading = false;
+  String? _errorMessage;
 
   // Getter untuk semua jadwal
   List<Schedule> get schedules => List.unmodifiable(_schedules);
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
 
   // Getter untuk semua konflik yang terdeteksi
   List<ScheduleConflict> get conflicts => _detectAllConflicts();
 
-  // Inisialisasi dengan data sample (opsional)
+  // Inisialisasi dengan data dari database
   ScheduleProvider() {
-    // Tambahkan sample data untuk testing
-    _addSampleData();
+    loadSchedules();
   }
 
-  void _addSampleData() {
-    final today = DateTime.now();
-    final tomorrow = today.add(const Duration(days: 1));
+  // Load schedules from database
+  Future<void> loadSchedules() async {
+    _isLoading = true;
+    notifyListeners();
 
-    _schedules.addAll([
-      Schedule(
-        id: '1',
-        title: 'Kuliah Kalkulus',
-        date: DateTime(today.year, today.month, today.day),
-        startTime: const TimeOfDay(hour: 8, minute: 0),
-        endTime: const TimeOfDay(hour: 10, minute: 0),
-        location: 'Ruang 301',
-      ),
-      Schedule(
-        id: '2',
-        title: 'Praktikum Basis Data',
-        date: DateTime(today.year, today.month, today.day),
-        startTime: const TimeOfDay(hour: 9, minute: 30),
-        endTime: const TimeOfDay(hour: 11, minute: 30),
-        location: 'Lab Komputer',
-      ),
-      Schedule(
-        id: '3',
-        title: 'Rapat BEM',
-        date: DateTime(today.year, today.month, today.day),
-        startTime: const TimeOfDay(hour: 13, minute: 0),
-        endTime: const TimeOfDay(hour: 15, minute: 0),
-        location: 'Ruang Rapat',
-      ),
-      Schedule(
-        id: '4',
-        title: 'UTS Rekayasa Perangkat Lunak',
-        date: DateTime(tomorrow.year, tomorrow.month, tomorrow.day),
-        startTime: const TimeOfDay(hour: 8, minute: 0),
-        endTime: const TimeOfDay(hour: 10, minute: 0),
-        location: 'Gedung A',
-      ),
-      Schedule(
-        id: '5',
-        title: 'Seminar AI',
-        date: DateTime(tomorrow.year, tomorrow.month, tomorrow.day),
-        startTime: const TimeOfDay(hour: 9, minute: 0),
-        endTime: const TimeOfDay(hour: 11, minute: 0),
-        location: 'Aula',
-      ),
-    ]);
+    try {
+      final userId = await _apiService.getUserId();
+      if (userId != null) {
+        final scheduleData = await _dbService.getSchedules(userId);
+        _schedules.clear();
+        
+        for (final data in scheduleData) {
+          _schedules.add(Schedule(
+            id: data['id'],
+            title: data['title'],
+            description: data['description'],
+            date: DateTime.fromMillisecondsSinceEpoch(data['date']),
+            startTime: TimeOfDay(hour: data['startHour'], minute: data['startMinute']),
+            endTime: TimeOfDay(hour: data['endHour'], minute: data['endMinute']),
+            location: data['location'],
+            reminderMinutes: data['reminderMinutes'],
+          ));
+        }
+        
+        _updateConflictStatus();
+      }
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = 'Failed to load schedules: $e';
+    }
 
-    _updateConflictStatus();
+    _isLoading = false;
+    notifyListeners();
   }
 
   // Ambil jadwal berdasarkan tanggal
@@ -92,48 +85,133 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   // Tambah jadwal baru
-  void addSchedule(Schedule schedule) {
-    _schedules.add(schedule);
-    _updateConflictStatus();
-    notifyListeners();
+  Future<void> addSchedule(Schedule schedule) async {
+    try {
+      final userId = await _apiService.getUserId();
+      if (userId == null) return;
+
+      final scheduleData = {
+        'id': schedule.id,
+        'userId': userId,
+        'title': schedule.title,
+        'description': schedule.description,
+        'date': schedule.date.millisecondsSinceEpoch,
+        'startHour': schedule.startTime.hour,
+        'startMinute': schedule.startTime.minute,
+        'endHour': schedule.endTime.hour,
+        'endMinute': schedule.endTime.minute,
+        'location': schedule.location,
+        'reminderMinutes': schedule.reminderMinutes,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+        'updatedAt': DateTime.now().millisecondsSinceEpoch,
+      };
+
+      await _dbService.insertSchedule(scheduleData);
+      
+      // PRODUCTION: Sync with API
+      /*
+      await _apiService.createSchedule(
+        title: schedule.title,
+        description: schedule.description,
+        date: schedule.date,
+        startHour: schedule.startTime.hour,
+        startMinute: schedule.startTime.minute,
+        endHour: schedule.endTime.hour,
+        endMinute: schedule.endTime.minute,
+        location: schedule.location,
+        reminderMinutes: schedule.reminderMinutes,
+      );
+      */
+
+      await loadSchedules();
+    } catch (e) {
+      _errorMessage = 'Failed to add schedule: $e';
+      notifyListeners();
+    }
   }
 
   // Update jadwal
-  void updateSchedule(Schedule updatedSchedule) {
-    final index = _schedules.indexWhere((s) => s.id == updatedSchedule.id);
-    if (index != -1) {
-      _schedules[index] = updatedSchedule;
-      _updateConflictStatus();
+  Future<void> updateSchedule(Schedule updatedSchedule) async {
+    try {
+      final scheduleData = {
+        'title': updatedSchedule.title,
+        'description': updatedSchedule.description,
+        'date': updatedSchedule.date.millisecondsSinceEpoch,
+        'startHour': updatedSchedule.startTime.hour,
+        'startMinute': updatedSchedule.startTime.minute,
+        'endHour': updatedSchedule.endTime.hour,
+        'endMinute': updatedSchedule.endTime.minute,
+        'location': updatedSchedule.location,
+        'reminderMinutes': updatedSchedule.reminderMinutes,
+      };
+
+      await _dbService.updateSchedule(updatedSchedule.id, scheduleData);
+      
+      // PRODUCTION: Sync with API
+      /*
+      await _apiService.updateSchedule(
+        scheduleId: updatedSchedule.id,
+        title: updatedSchedule.title,
+        description: updatedSchedule.description,
+        date: updatedSchedule.date,
+        startHour: updatedSchedule.startTime.hour,
+        startMinute: updatedSchedule.startTime.minute,
+        endHour: updatedSchedule.endTime.hour,
+        endMinute: updatedSchedule.endTime.minute,
+        location: updatedSchedule.location,
+        reminderMinutes: updatedSchedule.reminderMinutes,
+      );
+      */
+
+      await loadSchedules();
+    } catch (e) {
+      _errorMessage = 'Failed to update schedule: $e';
       notifyListeners();
     }
   }
 
   // Hapus jadwal
-  void deleteSchedule(String id) {
-    _schedules.removeWhere((s) => s.id == id);
-    _updateConflictStatus();
-    notifyListeners();
+  Future<void> deleteSchedule(String id) async {
+    try {
+      await _dbService.deleteSchedule(id);
+      
+      // PRODUCTION: Sync with API
+      // await _apiService.deleteSchedule(id);
+
+      await loadSchedules();
+    } catch (e) {
+      _errorMessage = 'Failed to delete schedule: $e';
+      notifyListeners();
+    }
   }
 
   // Reschedule - ubah waktu jadwal
-  void reschedule(String scheduleId, TimeOfDay newStartTime, TimeOfDay newEndTime) {
-    final index = _schedules.indexWhere((s) => s.id == scheduleId);
-    if (index != -1) {
-      _schedules[index] = _schedules[index].copyWith(
-        startTime: newStartTime,
-        endTime: newEndTime,
-      );
-      _updateConflictStatus();
+  Future<void> reschedule(String scheduleId, TimeOfDay newStartTime, TimeOfDay newEndTime) async {
+    try {
+      final index = _schedules.indexWhere((s) => s.id == scheduleId);
+      if (index != -1) {
+        final updated = _schedules[index].copyWith(
+          startTime: newStartTime,
+          endTime: newEndTime,
+        );
+        await updateSchedule(updated);
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to reschedule: $e';
       notifyListeners();
     }
   }
 
   // Pindah jadwal ke tanggal lain
-  void moveToDate(String scheduleId, DateTime newDate) {
-    final index = _schedules.indexWhere((s) => s.id == scheduleId);
-    if (index != -1) {
-      _schedules[index] = _schedules[index].copyWith(date: newDate);
-      _updateConflictStatus();
+  Future<void> moveToDate(String scheduleId, DateTime newDate) async {
+    try {
+      final index = _schedules.indexWhere((s) => s.id == scheduleId);
+      if (index != -1) {
+        final updated = _schedules[index].copyWith(date: newDate);
+        await updateSchedule(updated);
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to move schedule: $e';
       notifyListeners();
     }
   }
