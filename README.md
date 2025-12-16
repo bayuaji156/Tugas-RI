@@ -2,7 +2,7 @@
 
 ## Deskripsi Aplikasi
 
-GrowPlanner adalah aplikasi perencanaan dan manajemen produktivitas berbasis web yang dirancang untuk membantu pengguna dalam mengelola tujuan pribadi, menyusun jadwal kegiatan, serta memantau progres pengembangan diri secara berkelanjutan. Aplikasi ini menyediakan berbagai fitur pendukung seperti perencanaan belajar atau proyek, manajemen tugas (task management), serta pengingat (reminder) yang membantu pengguna tetap terorganisir dalam menjalankan aktivitas sehari-hari.
+GrowPlanner merupakan aplikasi perencanaan dan manajemen produktivitas berbasis web yang dirancang untuk membantu pengguna dalam mengelola tujuan pribadi, menyusun jadwal kegiatan, serta memantau progres pengembangan diri secara berkelanjutan. Aplikasi ini menyediakan berbagai fitur pendukung seperti perencanaan belajar atau proyek, manajemen tugas (task management), serta pengingat (reminder) yang membantu pengguna tetap terorganisir dalam menjalankan aktivitas sehari-hari.
 
 Setiap aktivitas yang dilakukan pengguna, termasuk pembuatan akun, pengaturan tujuan, penjadwalan tugas, hingga pencatatan progres, disimpan dan dikelola dalam sebuah database yang terintegrasi dengan sistem aplikasi. Penggunaan database memungkinkan data tersimpan secara terstruktur sehingga informasi dapat diakses kembali dengan mudah sesuai kebutuhan pengguna. Selain itu, database berperan dalam menjaga keterkaitan antar data, seperti hubungan antara pengguna dengan daftar tugas dan jadwal yang dimiliki.
 
